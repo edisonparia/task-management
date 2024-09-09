@@ -1,5 +1,10 @@
 import chroma from 'chroma-js'
-import Select, { StylesConfig, components } from 'react-select'
+import Select, {
+    StylesConfig,
+    components,
+    DropdownIndicatorProps,
+    MultiValue,
+} from 'react-select'
 import { TaskTag } from '../graphql/Types' // Importa tu enum TaskTag
 import { RiPriceTag3Fill } from 'react-icons/ri'
 import { capitalizeWords } from '@/utils/Utils'
@@ -103,7 +108,7 @@ const colourStyles: StylesConfig<(typeof taskTagOptions)[0], true> = {
     }),
 }
 
-const DropdownIndicator = (props) => {
+const DropdownIndicator = (props: DropdownIndicatorProps<Option, true>) => {
     return (
         <components.DropdownIndicator {...props}>
             <svg
@@ -134,7 +139,7 @@ export const MultiSelect = ({
     selectedTags: TaskTag[]
     setSelectedTags: (tags: TaskTag[]) => void
 }) => {
-    const handleChange = (selected: Option[] | null) => {
+    const handleChange = (selected: MultiValue<Option>) => {
         // Si hay opciones seleccionadas, mapea a sus valores
         if (selected) {
             setSelectedTags(selected.map((option) => option.value))
@@ -146,9 +151,11 @@ export const MultiSelect = ({
     return (
         <Select
             closeMenuOnSelect={false}
-            defaultValue={selectedTags.map((tag) =>
-                taskTagOptions.find((option) => option.value === tag)
-            )}
+            defaultValue={selectedTags
+                .map((tag) =>
+                    taskTagOptions.find((option) => option.value === tag)
+                )
+                .filter((option): option is Option => option !== undefined)} // Filters out undefined values
             isMulti
             options={taskTagOptions} // Usamos las opciones mapeadas del enum TaskTag
             styles={colourStyles} // Aplicamos los estilos personalizados

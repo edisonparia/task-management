@@ -2,7 +2,16 @@ import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 
-const SideBar: React.FC<{ routes: any }> = ({ routes }) => {
+interface Route {
+    name: string
+    path: string
+    icon?: JSX.Element // icon is optional, but it will be a JSX element if provided
+}
+interface SideBarProps {
+    routes: Route[] // Update to specify an array of Route objects
+}
+
+const SideBar: React.FC<SideBarProps> = ({ routes }) => {
     return (
         <aside className="flex h-[calc(100vh-64px)] w-[232px] flex-col items-center rounded-3xl bg-neutral-4 pt-4 text-neutral-2">
             <div className="mb-10 items-center">

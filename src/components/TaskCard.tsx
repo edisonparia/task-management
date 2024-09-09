@@ -1,5 +1,5 @@
 import React from 'react'
-import { TaskTag, TaskProps } from '../graphql/Types'
+import { TaskTag, TaskProps, Task } from '../graphql/Types'
 import {
     RiNodeTree,
     RiDeleteBin6Line,
@@ -32,6 +32,11 @@ import { GET_TASKS } from '@/graphql/Queries'
 import { DELETE_TASK } from '@/graphql/Mutations'
 import Avvvatars from 'avvvatars-react'
 
+
+
+interface TasksData {
+    tasks: Task[];
+}
 const TaskCard: React.FC<TaskProps> = ({ task }) => {
     const pointEstimateNumber = pointEstimateToNumber[task.pointEstimate]
 
@@ -41,7 +46,7 @@ const TaskCard: React.FC<TaskProps> = ({ task }) => {
             console.log('Task deleted:', task.id)
         },
         update: (cache, { data: { deleteTask } }) => {
-            const existingTasks: any = cache.readQuery({ query: GET_TASKS })
+            const existingTasks = cache.readQuery<TasksData>({ query: GET_TASKS })
 
             // Actualizamos el cache p
             if (existingTasks) {
@@ -49,7 +54,7 @@ const TaskCard: React.FC<TaskProps> = ({ task }) => {
                     query: GET_TASKS,
                     data: {
                         tasks: existingTasks.tasks.filter(
-                            (t: any) => t.id !== deleteTask.id
+                            (t: Task) => t.id !== deleteTask.id
                         ),
                     },
                 })
